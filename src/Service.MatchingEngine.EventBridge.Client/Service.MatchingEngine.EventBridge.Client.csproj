@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference PrivateAssets="All" Include="..\Service.MatchingEngine.EventBridge.Domain.Models\Service.MatchingEngine.EventBridge.Domain.Models.csproj" />
-    <ProjectReference PrivateAssets="All" Include="..\Service.MatchingEngine.EventBridge.Grpc\Service.MatchingEngine.EventBridge.Grpc.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Grpc.Core.Api" Version="2.35.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.35.0" />
