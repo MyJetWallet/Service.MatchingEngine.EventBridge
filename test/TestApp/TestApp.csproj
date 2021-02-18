@@ -7,7 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.Net.Client" Version="2.35.0" />
+    <PackageReference Include="MyServiceBus.TcpClient" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="protobuf-net.Grpc" Version="1.0.147" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Service.MatchingEngine.EventBridge.ServiceBus\Service.MatchingEngine.EventBridge.ServiceBus.csproj" />
   </ItemGroup>
 
 </Project>

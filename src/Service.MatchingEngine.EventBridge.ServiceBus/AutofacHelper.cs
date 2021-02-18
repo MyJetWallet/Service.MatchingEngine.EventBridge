@@ -13,7 +13,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         /// Register IPublisher for ClientRegistrationMessage
         /// </summary>
         public static void RegisterMeEventPublisher(this ContainerBuilder builder,
-            MyServiceBusTcpClient client, string topic = "spot-me-event")
+            MyServiceBusTcpClient client, string topic = default)
         {
             builder
                 .RegisterInstance(new MeEventServiceBusPublisher(client, topic))
@@ -25,7 +25,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         /// Register ISubscriber for ClientRegistrationMessage
         /// </summary>
         public static void RegisterMeEventSubscriber(this ContainerBuilder builder,
-            MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = "spot-me-event")
+            MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = default)
         {
             builder
                 .RegisterInstance(new MeEventServiceBusSubscriber(client, queueName, deleteOnDisconnect, topic))

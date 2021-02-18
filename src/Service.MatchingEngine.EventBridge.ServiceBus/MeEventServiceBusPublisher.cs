@@ -13,8 +13,11 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         private readonly MyServiceBusTcpClient _client;
         private readonly string _topic;
 
-        public MeEventServiceBusPublisher(MyServiceBusTcpClient client, string topic = "spot-me-event")
+        public MeEventServiceBusPublisher(MyServiceBusTcpClient client, string topic = default)
         {
+            if (string.IsNullOrEmpty(topic))
+                topic = "spot-me-events";
+
             _client = client;
             _topic = topic;
             _client.CreateTopicIfNotExists(_topic, 100000);

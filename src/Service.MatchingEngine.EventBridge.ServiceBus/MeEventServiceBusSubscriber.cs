@@ -13,8 +13,11 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
     {
         private readonly List<Func<MeEvent, ValueTask>> _list = new List<Func<MeEvent, ValueTask>>();
 
-        public MeEventServiceBusSubscriber(MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = "spot-me-event")
+        public MeEventServiceBusSubscriber(MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = default)
         {
+            if (string.IsNullOrEmpty(topic))
+                topic = "spot-me-events";
+
             client.Subscribe(topic, queueName, deleteOnDisconnect,
                 async bytes =>
                 {
