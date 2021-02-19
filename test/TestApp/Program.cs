@@ -17,6 +17,7 @@ namespace TestApp
 
             var serviceBusClient = new MyServiceBusTcpClient(() => "192.168.10.80:6421", "MyTestApp");
 
+            serviceBusClient.Start();
 
             var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App", true);
 
@@ -30,7 +31,7 @@ namespace TestApp
                 return ValueTask.CompletedTask;
             });
 
-            serviceBusClient.Start();
+            
 
 
 

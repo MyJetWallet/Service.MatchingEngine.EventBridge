@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using Autofac;
 using DotNetCoreDecorators;
 using JetBrains.Annotations;
 using ME.Contracts.OutgoingMessages;
@@ -29,7 +30,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         {
             builder
                 .RegisterInstance(new MeEventServiceBusSubscriber(client, queueName, deleteOnDisconnect, topic))
-                .As<ISubscriber<MeEvent>>()
+                .As<ISubscriber<IReadOnlyList<MeEvent>>>()
                 .SingleInstance();
         }
     }
