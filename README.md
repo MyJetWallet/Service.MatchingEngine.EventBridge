@@ -6,5 +6,5 @@
 
 ![CI test build](https://github.com/MyJetWallet/Service.MatchingEngine.EventBridge/workflows/CI%20test%20build/badge.svg)
 
-*Client library:* ![Nuget version](https://img.shields.io/nuget/v/MyJetWallet.Service.MatchingEngine.EventBridge.Client?label=MyJetWallet.Service.MatchingEngine.EventBridge.Client&style=social)
+*Client library:* ![Nuget version](https://img.shields.io/nuget/v/MyJetWallet.Service.MatchingEngine.EventBridge.ServiceBus?label=MyJetWallet.Service.MatchingEngine.EventBridge.ServiceBus&style=social)
 
