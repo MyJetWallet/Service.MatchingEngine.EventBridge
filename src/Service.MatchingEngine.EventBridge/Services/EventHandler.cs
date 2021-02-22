@@ -10,19 +10,19 @@ using Newtonsoft.Json;
 
 namespace Service.MatchingEngine.EventBridge.Services
 {
-    public class MeEventHandler : IMatchingEngineSubscriber<MeEvent>
+    public class OutgoingEventHandler : IMatchingEngineSubscriber<OutgoingEvent>
     {
-        private readonly IPublisher<MeEvent> _publisher;
-        private readonly ILogger<MeEventHandler> _logger;
+        private readonly IPublisher<OutgoingEvent> _publisher;
+        private readonly ILogger<OutgoingEventHandler> _logger;
         private long _lastNumber;
 
-        public MeEventHandler(IPublisher<MeEvent> publisher, ILogger<MeEventHandler> logger)
+        public OutgoingEventHandler(IPublisher<OutgoingEvent> publisher, ILogger<OutgoingEventHandler> logger)
         {
             _publisher = publisher;
             _logger = logger;
         }
 
-        public async Task Process(IList<CustomQueueItem<MeEvent>> batch)
+        public async Task Process(IList<CustomQueueItem<OutgoingEvent>> batch)
         {
             foreach (var item in batch)
             {
@@ -35,7 +35,7 @@ namespace Service.MatchingEngine.EventBridge.Services
                     }
                     catch(Exception ex)
                     {
-                        _logger.LogError(ex, "cannot publish message: {MeEventJson}", JsonConvert.SerializeObject(item.Value));
+                        _logger.LogError(ex, "cannot publish message: {OutgoingEventJson}", JsonConvert.SerializeObject(item.Value));
                         await Task.Delay(5000);
                     }
                 }

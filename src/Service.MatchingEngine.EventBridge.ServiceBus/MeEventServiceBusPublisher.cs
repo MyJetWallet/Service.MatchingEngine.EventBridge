@@ -8,7 +8,7 @@ using MyServiceBus.TcpClient;
 namespace Service.MatchingEngine.EventBridge.ServiceBus
 {
     [UsedImplicitly]
-    public class MeEventServiceBusPublisher : IPublisher<MeEvent>
+    public class MeEventServiceBusPublisher : IPublisher<OutgoingEvent>
     {
         private readonly MyServiceBusTcpClient _client;
         private readonly string _topic;
@@ -23,7 +23,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
             _client.CreateTopicIfNotExists(_topic, 100000);
         }
 
-        public async ValueTask PublishAsync(MeEvent valueToPublish)
+        public async ValueTask PublishAsync(OutgoingEvent valueToPublish)
         {
             var bytesToSend = valueToPublish.ToByteArray();
             await _client.PublishAsync(_topic, bytesToSend, true);

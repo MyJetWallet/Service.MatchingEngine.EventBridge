@@ -12,9 +12,9 @@ using MyServiceBus.TcpClient;
 namespace Service.MatchingEngine.EventBridge.ServiceBus
 {
     [UsedImplicitly]
-    public class MeEventServiceBusSubscriber : ISubscriber<IReadOnlyList<MeEvent>>
+    public class MeEventServiceBusSubscriber : ISubscriber<IReadOnlyList<OutgoingEvent>>
     {
-        private readonly List<Func<IReadOnlyList<MeEvent>, ValueTask>> _list = new();
+        private readonly List<Func<IReadOnlyList<OutgoingEvent>, ValueTask>> _list = new();
 
         public MeEventServiceBusSubscriber(MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = default)
         {
@@ -24,19 +24,19 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
             client.Subscribe(topic, queueName, deleteOnDisconnect, Subscriber);
         }
 
-        public void Subscribe(Func<IReadOnlyList<MeEvent>, ValueTask> callback)
+        public void Subscribe(Func<IReadOnlyList<OutgoingEvent>, ValueTask> callback)
         {
             _list.Add(callback);
         }
 
-        private MeEvent Deserializer(ReadOnlyMemory<byte> data)
+        private OutgoingEvent Deserializer(ReadOnlyMemory<byte> data)
         {
-            return MeEvent.Parser.ParseFrom(data.ToArray());
+            return OutgoingEvent.Parser.ParseFrom(data.ToArray());
         }
 
         private async ValueTask Subscriber(IReadOnlyList<IMyServiceBusMessage> batch)
         {
-            IReadOnlyList<MeEvent> itms = batch.Select(e => Deserializer(e.Data)).ToImmutableList();
+            IReadOnlyList<OutgoingEvent> itms = batch.Select(e => Deserializer(e.Data)).ToImmutableList();
 
             foreach (var subscriber in _list)
                 await subscriber(itms);

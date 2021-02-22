@@ -39,8 +39,8 @@ namespace Service.MatchingEngine.EventBridge.Modules
                 .SingleInstance();
 
             builder
-                .RegisterType<MeEventHandler>()
-                .As<IMatchingEngineSubscriber<MeEvent>>()
+                .RegisterType<OutgoingEventHandler>()
+                .As<IMatchingEngineSubscriber<OutgoingEvent>>()
                 .SingleInstance();
         }
     }

@@ -18,7 +18,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         {
             builder
                 .RegisterInstance(new MeEventServiceBusPublisher(client, topic))
-                .As<IPublisher<MeEvent>>()
+                .As<IPublisher<OutgoingEvent>>()
                 .SingleInstance();
         }
 
@@ -30,7 +30,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         {
             builder
                 .RegisterInstance(new MeEventServiceBusSubscriber(client, queueName, deleteOnDisconnect, topic))
-                .As<ISubscriber<IReadOnlyList<MeEvent>>>()
+                .As<ISubscriber<IReadOnlyList<OutgoingEvent>>>()
                 .SingleInstance();
         }
     }
