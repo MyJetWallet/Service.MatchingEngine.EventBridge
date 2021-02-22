@@ -19,14 +19,16 @@ namespace TestApp
 
             serviceBusClient.Start();
 
-            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App", true);
+            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App-1", false);
 
             subs.Subscribe(meEventList =>
             {
                 foreach (var meEvent in meEventList)
                 {
-                    Console.WriteLine($"{meEvent.Header.EventType}:");
-                    Console.WriteLine(JsonConvert.SerializeObject(meEvent, Formatting.Indented));
+                    Console.WriteLine($"{meEvent.Header.EventType}: {meEvent.Header.SequenceNumber}");
+                    //Console.WriteLine(JsonConvert.SerializeObject(meEvent, Formatting.Indented));
+
+                    //Console.ReadLine();
                 }
                 return ValueTask.CompletedTask;
             });

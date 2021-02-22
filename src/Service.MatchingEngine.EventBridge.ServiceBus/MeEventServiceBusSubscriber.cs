@@ -22,6 +22,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
                 topic = "spot-me-events";
 
             client.Subscribe(topic, queueName, deleteOnDisconnect, Subscriber);
+            
         }
 
         public void Subscribe(Func<IReadOnlyList<OutgoingEvent>, ValueTask> callback)
@@ -36,6 +37,8 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
 
         private async ValueTask Subscriber(IReadOnlyList<IMyServiceBusMessage> batch)
         {
+            //Console.WriteLine($"Receive: {batch.Count}");
+
             IReadOnlyList<OutgoingEvent> itms = batch.Select(e => Deserializer(e.Data)).ToImmutableList();
 
             foreach (var subscriber in _list)
