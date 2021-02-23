@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MyServiceBus.TcpClient;
 using Newtonsoft.Json;
-using ProtoBuf.Grpc.Client;
 using Service.MatchingEngine.EventBridge.ServiceBus;
 
 namespace TestApp
@@ -19,14 +17,14 @@ namespace TestApp
 
             serviceBusClient.Start();
 
-            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App-1", false);
+            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App-1", true);
 
             subs.Subscribe(meEventList =>
             {
                 foreach (var meEvent in meEventList)
                 {
                     Console.WriteLine($"{meEvent.Header.EventType}: {meEvent.Header.SequenceNumber}");
-                    //Console.WriteLine(JsonConvert.SerializeObject(meEvent, Formatting.Indented));
+                    Console.WriteLine(JsonConvert.SerializeObject(meEvent, Formatting.Indented));
 
                     //Console.ReadLine();
                 }
