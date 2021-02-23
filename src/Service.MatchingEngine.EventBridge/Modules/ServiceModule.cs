@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Autofac;
+﻿using Autofac;
 using ME.Contracts.OutgoingMessages;
 using MyJetWallet.MatchingEngine.EventReader;
 using MyJetWallet.Sdk.Service;
@@ -22,14 +21,7 @@ namespace Service.MatchingEngine.EventBridge.Modules
             var settings = new MatchingEngineEventReaderSettings(Program.Settings.RabbitMqConnectionString, Program.Settings.RabbitMqQueryName)
             {
                 TopicName = Program.Settings.RabbitMqExchange,
-                IsQueueAutoDelete = false,
-                MessageTypes = new List<Header.Types.MessageType>()
-                {
-                    Header.Types.MessageType.CashIn,
-                    Header.Types.MessageType.CashOut,
-                    Header.Types.MessageType.CashTransfer,
-                    Header.Types.MessageType.Order
-                }
+                IsQueueAutoDelete = false
             };
 
             builder
