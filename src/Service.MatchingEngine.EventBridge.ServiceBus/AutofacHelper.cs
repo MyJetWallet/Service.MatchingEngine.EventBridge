@@ -3,6 +3,7 @@ using Autofac;
 using DotNetCoreDecorators;
 using JetBrains.Annotations;
 using ME.Contracts.OutgoingMessages;
+using MyServiceBus.Abstractions;
 using MyServiceBus.TcpClient;
 
 namespace Service.MatchingEngine.EventBridge.ServiceBus
@@ -26,10 +27,10 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
         /// Register ISubscriber for ClientRegistrationMessage
         /// </summary>
         public static void RegisterMeEventSubscriber(this ContainerBuilder builder,
-            MyServiceBusTcpClient client, string queueName, bool deleteOnDisconnect, string topic = default)
+            MyServiceBusTcpClient client, string queueName, TopicQueueType queryType, string topic = default)
         {
             builder
-                .RegisterInstance(new MeEventServiceBusSubscriber(client, queueName, deleteOnDisconnect, topic))
+                .RegisterInstance(new MeEventServiceBusSubscriber(client, queueName, queryType, topic))
                 .As<ISubscriber<IReadOnlyList<OutgoingEvent>>>()
                 .SingleInstance();
         }

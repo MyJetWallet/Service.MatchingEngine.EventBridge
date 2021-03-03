@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MyServiceBus.Abstractions;
 using MyServiceBus.TcpClient;
 using Newtonsoft.Json;
 using Service.MatchingEngine.EventBridge.ServiceBus;
@@ -17,7 +18,7 @@ namespace TestApp
 
             serviceBusClient.Start();
 
-            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App-1", true);
+            var subs = new MeEventServiceBusSubscriber(serviceBusClient, "Test-App-1", TopicQueueType.DeleteOnDisconnect);
 
             subs.Subscribe(meEventList =>
             {

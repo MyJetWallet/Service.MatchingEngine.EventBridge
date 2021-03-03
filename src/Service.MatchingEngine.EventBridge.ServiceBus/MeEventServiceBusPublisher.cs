@@ -20,7 +20,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
 
             _client = client;
             _topic = topic;
-            _client.CreateTopicIfNotExists(_topic, 100000);
+            _client.CreateTopicIfNotExists(_topic);
         }
 
         public async ValueTask PublishAsync(OutgoingEvent valueToPublish)
