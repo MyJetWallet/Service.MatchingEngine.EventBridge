@@ -35,7 +35,7 @@ namespace Service.MatchingEngine.EventBridge.ServiceBus
             return OutgoingEvent.Parser.ParseFrom(data.ToArray());
         }
 
-        private async ValueTask Subscriber(IReadOnlyList<IMyServiceBusMessage> batch)
+        private async ValueTask Subscriber(IConfirmationContext ctx, IReadOnlyList<IMyServiceBusMessage> batch)
         {
             //Console.WriteLine($"Receive: {batch.Count}");
 
