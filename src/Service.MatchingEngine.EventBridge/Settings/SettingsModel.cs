@@ -18,5 +18,6 @@ namespace Service.MatchingEngine.EventBridge.Settings
         [YamlProperty("MatchingEngineEventBridge.RabbitMq.ConnectionString")]  public string RabbitMqConnectionString { get; set; }
         [YamlProperty("MatchingEngineEventBridge.RabbitMq.Exchange")]   public string RabbitMqExchange { get; set; }
         [YamlProperty("MatchingEngineEventBridge.RabbitMq.QueryName")]  public string RabbitMqQueryName { get; set; }
+        [YamlProperty("MatchingEngineEventBridge.ZipkinUrl")] public string ZipkinUrl { get; set; }
     }
 }
