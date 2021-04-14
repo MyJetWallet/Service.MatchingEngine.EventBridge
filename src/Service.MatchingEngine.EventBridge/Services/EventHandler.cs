@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DotNetCoreDecorators;
 using ME.Contracts.OutgoingMessages;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.MatchingEngine.EventReader;
 using MyJetWallet.MatchingEngine.EventReader.BaseReader;
+using MyJetWallet.Sdk.Service;
 using Newtonsoft.Json;
 
 namespace Service.MatchingEngine.EventBridge.Services
@@ -24,21 +26,34 @@ namespace Service.MatchingEngine.EventBridge.Services
 
         public async Task Process(IList<CustomQueueItem<OutgoingEvent>> batch)
         {
-            foreach (var item in batch)
+            using var activity = MyTelemetry.StartActivity("Process ME events");
+            batch.Count.AddToActivityAsTag("count-events");
+            batch.Min(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("min-sequence-number");
+            batch.Max(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("max-sequence-number");
+
+            var list = new List<Task>();
+            var number = _lastNumber;
+
+            try
             {
-                if (item.Value.Header.SequenceNumber > _lastNumber)
+                foreach (var item in batch)
                 {
-                    try
+                    if (item.Value.Header.SequenceNumber > number)
                     {
-                        await _publisher.PublishAsync(item.Value);
-                        _lastNumber = item.Value.Header.SequenceNumber;
-                    }
-                    catch(Exception ex)
-                    {
-                        _logger.LogError(ex, "cannot publish message: {OutgoingEventJson}", JsonConvert.SerializeObject(item.Value));
-                        await Task.Delay(5000);
+                        list.Add(_publisher.PublishAsync(item.Value).AsTask());
+                        number = item.Value.Header.SequenceNumber;
                     }
                 }
+
+                await Task.WhenAll(list);
+
+                _lastNumber = number;
+            }
+            catch (Exception ex)
+            {
+                ex.FailActivity();
+                _logger.LogError(ex, "cannot publish messages from ME Count: {count}", batch.Count);
+                throw;
             }
         }
     }
