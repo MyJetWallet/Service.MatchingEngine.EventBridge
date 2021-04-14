@@ -43,7 +43,7 @@ namespace Service.MatchingEngine.EventBridge.Services
             {
                 foreach (var item in batch)
                 {
-                    if (item.Value.Header.SequenceNumber > number)
+                    //if (item.Value.Header.SequenceNumber > number)
                     {
                         list.Add(_publisher.PublishAsync(item.Value).AsTask());
                         number = item.Value.Header.SequenceNumber;
