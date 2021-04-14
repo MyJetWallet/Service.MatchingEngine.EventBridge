@@ -31,8 +31,10 @@ namespace Service.MatchingEngine.EventBridge.Services
             _lastNumber.AddToActivityAsTag("start-number");
 
             batch.Count.AddToActivityAsTag("count-events");
-            batch.Min(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("min-sequence-number");
-            batch.Max(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("max-sequence-number");
+            var minSid = batch.Min(e => e.Value.Header.SequenceNumber);
+            minSid.AddToActivityAsTag("min-sequence-number");
+            var maxSid = batch.Max(e => e.Value.Header.SequenceNumber);
+            maxSid.AddToActivityAsTag("max-sequence-number");
 
             var list = new List<Task>();
             var number = _lastNumber;
@@ -57,7 +59,8 @@ namespace Service.MatchingEngine.EventBridge.Services
             catch (Exception ex)
             {
                 ex.FailActivity();
-                _logger.LogError(ex, "cannot publish messages from ME Count: {count}. LastNumber: {lastNumber}", batch.Count, _lastNumber);
+                _logger.LogError(ex, "cannot publish messages from ME Count: {count}. LastNumber: {lastNumber}. MinNumber: {minNumber}. MaxNumber: {maxNumber}", 
+                    batch.Count, _lastNumber, minSid, maxSid);
                 await Task.Delay(5000);
                 throw;
             }
