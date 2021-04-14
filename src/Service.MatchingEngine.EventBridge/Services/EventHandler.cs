@@ -27,6 +27,9 @@ namespace Service.MatchingEngine.EventBridge.Services
         public async Task Process(IList<CustomQueueItem<OutgoingEvent>> batch)
         {
             using var activity = MyTelemetry.StartActivity("Process ME events");
+
+            _lastNumber.AddToActivityAsTag("start-number");
+
             batch.Count.AddToActivityAsTag("count-events");
             batch.Min(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("min-sequence-number");
             batch.Max(e => e.Value.Header.SequenceNumber).AddToActivityAsTag("max-sequence-number");
@@ -48,11 +51,13 @@ namespace Service.MatchingEngine.EventBridge.Services
                 await Task.WhenAll(list);
 
                 _lastNumber = number;
+
+                _lastNumber.AddToActivityAsTag("end-number");
             }
             catch (Exception ex)
             {
                 ex.FailActivity();
-                _logger.LogError(ex, "cannot publish messages from ME Count: {count}", batch.Count);
+                _logger.LogError(ex, "cannot publish messages from ME Count: {count}. LastNumber: {lastNumber}", batch.Count, _lastNumber);
                 await Task.Delay(5000);
                 throw;
             }
