@@ -53,6 +53,7 @@ namespace Service.MatchingEngine.EventBridge.Services
             {
                 ex.FailActivity();
                 _logger.LogError(ex, "cannot publish messages from ME Count: {count}", batch.Count);
+                await Task.Delay(5000);
                 throw;
             }
         }
