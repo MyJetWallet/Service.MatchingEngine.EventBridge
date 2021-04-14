@@ -55,6 +55,10 @@ namespace Service.MatchingEngine.EventBridge.Services
                 _lastNumber = number;
 
                 _lastNumber.AddToActivityAsTag("end-number");
+
+                _logger.LogDebug(
+                    "Success. Publish messages from ME Count: {count}. LastNumber: {lastNumber}. MinNumber: {minNumber}. MaxNumber: {maxNumber}",
+                    batch.Count, _lastNumber, minSid, maxSid);
             }
             catch (Exception ex)
             {
