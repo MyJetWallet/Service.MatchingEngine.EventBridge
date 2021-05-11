@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
 using System.Net;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service;
+using MySettingsReader;
 using Service.MatchingEngine.EventBridge.Settings;
-using SimpleTrading.SettingsReader;
 
 namespace Service.MatchingEngine.EventBridge
 {
@@ -22,7 +22,7 @@ namespace Service.MatchingEngine.EventBridge
         {
             return () =>
             {
-                var settings = SettingsReader.ReadSettings<SettingsModel>(SettingsFileName);
+                var settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
                 var value = getter.Invoke(settings);
                 return value;
             };
@@ -32,9 +32,9 @@ namespace Service.MatchingEngine.EventBridge
         {
             Console.Title = "MyJetWallet Service.MatchingEngine.EventBridge";
 
-            Settings = SettingsReader.ReadSettings<SettingsModel>(SettingsFileName);
+            Settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
 
-            using var loggerFactory = LogConfigurator.Configure("MyJetWallet", Settings.SeqServiceUrl);
+            using var loggerFactory = LogConfigurator.ConfigureElk("MyJetWallet", Settings.SeqServiceUrl, Settings.ElkLogs);
 
             var logger = loggerFactory.CreateLogger<Program>();
 

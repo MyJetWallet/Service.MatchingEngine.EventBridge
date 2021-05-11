@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using ME.Contracts.OutgoingMessages;
-using MyJetWallet.MatchingEngine.EventReader;
 using MyJetWallet.Sdk.Service;
 using MyServiceBus.TcpClient;
 using Service.MatchingEngine.EventBridge.ServiceBus;
@@ -18,21 +17,9 @@ namespace Service.MatchingEngine.EventBridge.Modules
 
             builder.RegisterMeEventPublisher(serviceBusClient, Program.Settings.TopicName);
 
-            var settings = new MatchingEngineEventReaderSettings(Program.Settings.RabbitMqConnectionString, Program.Settings.RabbitMqQueryName)
-            {
-                TopicName = Program.Settings.RabbitMqExchange,
-                IsQueueAutoDelete = false
-            };
-
-            builder
-                .RegisterType<MatchingEngineGlobalEventReader>()
-                .WithParameter("settings", settings)
-                .AsSelf()
-                .SingleInstance();
-
             builder
                 .RegisterType<OutgoingEventHandler>()
-                .As<IMatchingEngineSubscriber<OutgoingEvent>>()
+                .As<OutgoingEventsService.OutgoingEventsServiceBase>()
                 .SingleInstance();
         }
     }

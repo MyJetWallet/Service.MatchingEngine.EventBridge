@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DotNetCoreDecorators;
+using Grpc.Core;
 using ME.Contracts.OutgoingMessages;
 using Microsoft.Extensions.Logging;
-using MyJetWallet.MatchingEngine.EventReader;
-using MyJetWallet.MatchingEngine.EventReader.BaseReader;
 using MyJetWallet.Sdk.Service;
-using Newtonsoft.Json;
 
 namespace Service.MatchingEngine.EventBridge.Services
 {
-    public class OutgoingEventHandler : IMatchingEngineSubscriber<OutgoingEvent>
+    public class OutgoingEventHandler : OutgoingEventsService.OutgoingEventsServiceBase
     {
         private readonly IPublisher<OutgoingEvent> _publisher;
         private readonly ILogger<OutgoingEventHandler> _logger;
@@ -24,16 +22,17 @@ namespace Service.MatchingEngine.EventBridge.Services
             _logger = logger;
         }
 
-        public async Task Process(IList<CustomQueueItem<OutgoingEvent>> batch)
+        public override async Task<PublishRequestResult> PublishEvents(OutgoingEventBatch request,
+            ServerCallContext context)
         {
             using var activity = MyTelemetry.StartActivity("Process ME events");
 
             _lastNumber.AddToActivityAsTag("start-number");
 
-            batch.Count.AddToActivityAsTag("count-events");
-            var minSid = batch.Min(e => e.Value.Header.SequenceNumber);
+            request.Events.Count.AddToActivityAsTag("count-events");
+            var minSid = request.Events.Min(e => e.Header.SequenceNumber);
             minSid.AddToActivityAsTag("min-sequence-number");
-            var maxSid = batch.Max(e => e.Value.Header.SequenceNumber);
+            var maxSid = request.Events.Max(e => e.Header.SequenceNumber);
             maxSid.AddToActivityAsTag("max-sequence-number");
 
             var list = new List<Task>();
@@ -41,12 +40,12 @@ namespace Service.MatchingEngine.EventBridge.Services
 
             try
             {
-                foreach (var item in batch)
+                foreach (var item in request.Events)
                 {
                     //if (item.Value.Header.SequenceNumber > number)
                     {
-                        list.Add(_publisher.PublishAsync(item.Value).AsTask());
-                        number = item.Value.Header.SequenceNumber;
+                        list.Add(_publisher.PublishAsync(item).AsTask());
+                        number = item.Header.SequenceNumber;
                     }
                 }
 
@@ -58,15 +57,24 @@ namespace Service.MatchingEngine.EventBridge.Services
 
                 _logger.LogDebug(
                     "Success. Publish messages from ME Count: {count}. LastNumber: {lastNumber}. MinNumber: {minNumber}. MaxNumber: {maxNumber}",
-                    batch.Count, _lastNumber, minSid, maxSid);
+                    request.Events.Count, _lastNumber, minSid, maxSid);
+                return new PublishRequestResult()
+                {
+                    Published = true
+                };
             }
             catch (Exception ex)
             {
                 ex.FailActivity();
-                _logger.LogError(ex, "cannot publish messages from ME Count: {count}. LastNumber: {lastNumber}. MinNumber: {minNumber}. MaxNumber: {maxNumber}", 
-                    batch.Count, _lastNumber, minSid, maxSid);
+                _logger.LogError(ex,
+                    "cannot publish messages from ME Count: {count}. LastNumber: {lastNumber}. MinNumber: {minNumber}. MaxNumber: {maxNumber}",
+                    request.Events.Count, _lastNumber, minSid, maxSid);
                 await Task.Delay(5000);
-                throw;
+                return new PublishRequestResult()
+                {
+                    Published = false,
+                    Reason = ex.Message
+                };
             }
         }
     }
