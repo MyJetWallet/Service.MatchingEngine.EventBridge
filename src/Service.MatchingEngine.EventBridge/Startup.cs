@@ -11,6 +11,7 @@ using MyJetWallet.Sdk.Service;
 using Prometheus;
 using ProtoBuf.Grpc.Server;
 using Service.MatchingEngine.EventBridge.Modules;
+using Service.MatchingEngine.EventBridge.Services;
 using SimpleTrading.BaseMetrics;
 using SimpleTrading.ServiceStatusReporterConnector;
 
@@ -49,6 +50,7 @@ namespace Service.MatchingEngine.EventBridge
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcSchemaRegistry();
+                endpoints.MapGrpcService<OutgoingEventHandler>();
 
                 endpoints.MapGet("/", async context =>
                 {
