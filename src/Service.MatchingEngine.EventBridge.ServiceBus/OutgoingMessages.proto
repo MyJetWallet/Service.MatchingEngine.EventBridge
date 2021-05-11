@@ -9,11 +9,12 @@ option java_package = "com.myjetwallet.messages.outgoing.grpc";
 option java_outer_classname = "OutgoingMessages";
 option csharp_namespace = "ME.Contracts.OutgoingMessages";
 
-service OutgoingEventsService {
-    rpc PublishEvents(OutgoingEventBatch) returns (PublishRequestResult){};
+service GrpcOutgoingEventsService {
+    rpc PublishEvents (MessageWrapper) returns (PublishRequestResult) {
+    };
 }
 
-message OutgoingEventBatch {
+message MessageWrapper {
     repeated OutgoingEvent events = 1;
 }
 
