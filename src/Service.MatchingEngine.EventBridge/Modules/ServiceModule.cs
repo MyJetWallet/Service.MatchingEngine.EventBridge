@@ -19,7 +19,7 @@ namespace Service.MatchingEngine.EventBridge.Modules
 
             builder
                 .RegisterType<OutgoingEventHandler>()
-                .As<OutgoingEventsService.OutgoingEventsServiceBase>()
+                .As<GrpcOutgoingEventsService.GrpcOutgoingEventsServiceBase>()
                 .SingleInstance();
         }
     }

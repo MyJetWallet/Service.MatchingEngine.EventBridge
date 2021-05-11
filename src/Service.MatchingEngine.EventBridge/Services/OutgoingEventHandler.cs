@@ -10,7 +10,7 @@ using MyJetWallet.Sdk.Service;
 
 namespace Service.MatchingEngine.EventBridge.Services
 {
-    public class OutgoingEventHandler : OutgoingEventsService.OutgoingEventsServiceBase
+    public class OutgoingEventHandler : GrpcOutgoingEventsService.GrpcOutgoingEventsServiceBase
     {
         private readonly IPublisher<OutgoingEvent> _publisher;
         private readonly ILogger<OutgoingEventHandler> _logger;
@@ -22,7 +22,7 @@ namespace Service.MatchingEngine.EventBridge.Services
             _logger = logger;
         }
 
-        public override async Task<PublishRequestResult> PublishEvents(OutgoingEventBatch request,
+        public override async Task<PublishRequestResult> PublishEvents(MessageWrapper request,
             ServerCallContext context)
         {
             using var activity = MyTelemetry.StartActivity("Process ME events");
