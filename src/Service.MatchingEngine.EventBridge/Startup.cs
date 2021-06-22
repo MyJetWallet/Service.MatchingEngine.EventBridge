@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ namespace Service.MatchingEngine.EventBridge
             {
                 options.Interceptors.Add<PrometheusMetricsInterceptor>();
                 options.BindMetricsInterceptors();
+                options.MaxReceiveMessageSize = Program.Settings.GrpcMaxReceiveMessageSize;
             });
 
             services.AddHostedService<ApplicationLifetimeManager>();

@@ -19,5 +19,8 @@ namespace Service.MatchingEngine.EventBridge.Settings
 
         [YamlProperty("MatchingEngineEventBridge.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
+
+        [YamlProperty("MatchingEngineEventBridge.GrpcMaxReceiveMessageSize")]
+        public int GrpcMaxReceiveMessageSize { get; set; }
     }
 }
