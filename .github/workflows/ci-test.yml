@@ -62,7 +62,6 @@ jobs:
 
   restart:
     runs-on: ubuntu-latest    
-    if: ${{ secrets.KUBE_TEST_NAMESPACE }} != 'null'
     steps:
     - name: Restart service
       uses: Myjetwallet/kube-restart-pods@master
