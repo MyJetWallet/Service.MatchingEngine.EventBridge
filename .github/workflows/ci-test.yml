@@ -22,8 +22,8 @@ jobs:
       id: current-time
       with:
         format: YYYY-MM-DD HH:mm:ss
-        utcOffset: "+00:00"  
-
+        utcOffset: "+00:00"
+        
     - name: Build
       run: dotnet build --configuration Release /p:AssemblyVersion=0.0.${{ github.run_number }}
     - name: Test
@@ -46,5 +46,17 @@ jobs:
         registry: docker.pkg.github.com
         repository: ${{ secrets.ORG_NAME }}/service.matchingengine.eventbridge/myjetwallet.service.matchingengine.eventbridge-test
         tags: latest
+        build_args: app_version=myjetwallet.service.matchingengine.eventbridge-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
+
+    - name: Publish image ST
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.ST_DOCKER_USER }}
+        password: ${{ secrets.ST_DOCKER_PASSWORD }}
+        path: ./publish-api
+        registry: simpletrading.azurecr.io
+        repository: spot/myjetwallet.service.matchingengine.eventbridge-test
+        tags: latest
+        add_git_labels: true
         build_args: app_version=myjetwallet.service.matchingengine.eventbridge-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
 
