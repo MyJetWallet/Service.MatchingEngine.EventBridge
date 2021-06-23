@@ -60,6 +60,10 @@ jobs:
         add_git_labels: true
         build_args: app_version=myjetwallet.service.matchingengine.eventbridge-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
 
+  restart:
+    runs-on: ubuntu-latest    
+    if: ${{ secrets.KUBE_TEST_NAMESPACE }} != 'null'
+    steps:
     - name: Restart service
       uses: Myjetwallet/kube-restart-pods@master
       env:
