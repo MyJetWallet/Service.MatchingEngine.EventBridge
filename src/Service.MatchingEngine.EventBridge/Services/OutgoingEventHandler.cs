@@ -77,5 +77,10 @@ namespace Service.MatchingEngine.EventBridge.Services
                 };
             }
         }
+
+        public override Task<Pong> PingPong(Ping request, ServerCallContext context)
+        {
+            return new Pong().AsTask();
+        }
     }
 }
